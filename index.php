@@ -3,7 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Pinterest</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/foundation/6.2.4/foundation.min.css">
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" integrity="sha256-itWEYdFWzZPBG78bJOOiQIn06QCgN/F0wMDcC4nOhxY=" crossorigin="anonymous" /> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<form action="upload.php" method="post" enctype="multipart/form-data">
@@ -19,20 +21,28 @@
 		</div>
 	</form>
 
-	<div class="row">
+	<main class="row">
+		<!-- <div class="wrapper"> -->
 	<?php
 		$target_dir = "uploads/";
 		$imgs = array_slice(scandir($target_dir),2);
-		echo '<pre>'.print_r($imgs, true).'</pre>';
+		//echo '<pre>'.print_r($imgs, true).'</pre>';
 		foreach ($imgs as $key => $img) {
 		?>
-			<div class="large-3 columns">
-				<img src="<?= $target_dir.$img?>" alt="">
-			</div>
+			
+				<div class="card">
+				  <img src="<?= $target_dir.$img?>" alt="">
+				  <div class="card-section">
+				    <h4>This is a card.</h4>
+				    <p>It has an easy to override visual style, and is appropriately subdued.</p>
+				  </div>
+				</div>
+			
+
 		<?php	
 		}
 	?>
-		
-	</div>
+		<!-- </div> -->
+	</main>
 </body>
 </html>

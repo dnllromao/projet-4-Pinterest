@@ -1,3 +1,11 @@
+header {
+	border-bottom: 1px solid #eee;
+}
+
+input[type="file"] {
+	border: 1px solid blue;
+}
+
 .card {
 	width: 250px;
 	margin-right: .9375rem;
@@ -9,10 +17,22 @@ main.row {
 	padding-right: .4687rem;
 	padding-left: .4687rem;
 }
+main.grid {
+	padding-right: .4687rem;
+	padding-left: .4687rem;
+}
+
+/* isotope */
+.grid-item { width: 260px; }
+
 
 /* Small only */
 @media screen and (max-width: 34.0567em) {
 	main.row {
+		/* background-color: yellow; */
+		max-width: calc( (250px + 0.4687rem * 2) + 0.4687rem * 2);
+	}
+	main.grid {
 		/* background-color: yellow; */
 		max-width: calc( (250px + 0.4687rem * 2) + 0.4687rem * 2);
 	}
@@ -24,10 +44,18 @@ main.row {
 		/* background-color: blue; */
 		max-width: calc( (250px + 0.4687rem * 2) * 2 + 0.4687rem * 2);
 	}
+	main.grid {
+		/* background-color: blue; */
+		max-width: calc( (250px + 0.4687rem * 2) * 2 + 0.4687rem * 2);
+	}
 }
 /* Medium only */
 @media screen and (min-width: 50.619em) and (max-width: 67.177em) {
 	main.row {
+		/* background-color: green; */
+		max-width: calc( (250px + 0.4687rem * 2) * 3 + 0.4687rem * 2);
+	}
+	main.grid {
 		/* background-color: green; */
 		max-width: calc( (250px + 0.4687rem * 2) * 3 + 0.4687rem * 2);
 	}
@@ -39,4 +67,12 @@ main.row {
 		/* background-color: red; */
 		max-width: calc( (250px + 0.4687rem * 2) * 4 + 0.4687rem * 2);
 	}
+	main.grid {
+		/* background-color: red; */
+		max-width: calc( (250px + 0.4687rem * 2) * 4 + 0.4687rem * 2);
+	}
 }
+
+/* Flexbox Pinterest-style grid – 1 
+	https://codepen.io/michellebarker/pen/zvxpoG
+*/

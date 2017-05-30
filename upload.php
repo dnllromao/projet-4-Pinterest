@@ -13,27 +13,34 @@
 
 	WebP (https://developers.google.com/speed/webp/)
 
-
 	*/
+
 	//echo '<pre>'.print_r($_FILES, true).'</pre>';
 
+	if(isset($_POST["submit"]) && $_FILES['fileToUpload']['error'] > 0) {
+		header('Location: index.php');
+		exit();
+	}
+		
+
 	$target_dir = "uploads/";
-	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+	$target_image = basename($_FILES["fileToUpload"]["name"]);
+	$target_file = $target_dir . $target_image;
 	$uploadOk = 1;
 	$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
 	// Check if image file is a actual image or fake image
-	if(isset($_POST["submit"])) {
+	//if(isset($_POST["submit"])) {
 	    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
 	    //echo '<pre>'.print_r($check, true).'</pre>';
 	    if($check !== false) {
-	        echo "File is an image - " . $check["mime"] . ".";
+	        //echo "File is an image - " . $check["mime"] . ".";
 	        $uploadOk = 1;
 	    } else {
 	        echo "File is not an image.";
 	        $uploadOk = 0;
 	    }
-	}
+	//}
 
 	// Check if file already exists
 	if (file_exists($target_file)) {
@@ -58,40 +65,16 @@
 	    echo "Sorry, your file was not uploaded.";
 	// if everything is ok, try to upload file
 	} else {
-		echo '<br>'.$target_file;
+		//echo '<br>'.$target_file;
 	    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-	        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+	        //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+	    ?>
+			<!-- form comes here -->
+	    <?php
 	    } else {
 	        echo "Sorry, there was an error uploading your file.";
 	    }
 	}
-
-	/*require ('vendor/claviska/simpleimage/src/claviska/SimpleImage.php');
-
-
-	var_dump(class_exists('\claviska\SimpleImage'));
-	$img = new \claviska\SimpleImage('uploads/test.jpeg');
-	var_dump($img);
-	$img->border('black', 5) ;*/
-
-	//echo '<img src="uploads/test.jpeg" alt="">';
-
-	require 'vendor/claviska/simpleimage/src/claviska/SimpleImage.php';
-
-	try {
-	  // Create a new SimpleImage object
-	  $image = new \claviska\SimpleImage('uploads/test.jpeg');
-	  // Manipulate it
-	  $image
-	    ->crop(0,0,284,177)
-	    ->toFile('uploads/test01.jpeg');                      // output to the screen
-	} catch(Exception $err) {
-	  // Handle errors
-	  echo $err->getMessage();
-	}
-	
-	//echo '<img src="uploads/test01.jpeg" alt="">';
-
 
 ?>
 <!DOCTYPE html>
@@ -103,19 +86,27 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="row large-up-12">
+	<div class="row">
 		<h1>Edition d'image</h1>
-		<img src="<?php ?>" alt="">
-		<form action="">
-			<p>Customize your image</p>
-			<fieldset class="large-6 columns">
-			    <legend>Crop</legend>
-			    <input type="radio" name="crop" value="Red" id="pokemonRed" required><label for="pokemonRed">Red</label>
-			    <input type="radio" name="pokemon" value="Blue" id="pokemonBlue"><label for="pokemonBlue">Blue</label>
-			    <input type="radio" name="pokemon" value="Yellow" id="pokemonYellow"><label for="pokemonYellow">Yellow</label>
-			</fieldset>
-			<input type="hidden" name="">
-		</form>
+	</div>
+	<div class="row align-middle">
+		<div class="small-6 columns">
+			<img src="<?= $target_file?>" alt="">
+		</div>
+		<div class="small-6 columns">
+			<form action="index.php" method="post">
+				<p>Customize your image</p>
+				<fieldset class="large-6 columns">
+				    <legend>Crop</legend>
+				    <input type="radio" name="crop" value="1:1" id="crop1" required><label for="crop1">[1:1]</label>
+				    <!--<input type="radio" name="crop" value="4:3" id="crop2"><label for="crop2">[4:3]</label>-->
+				    <input type="radio" name="crop" value="none" id="crop3"><label for="crop3">none</label>
+				</fieldset>
+				<input type="hidden" name="img" value="<?= $target_image; ?>">
+				<input type="submit" class="button" name="submit" value="Submit">
+			</form>
+		</div>
+		
 	</div>
 	
 </body>

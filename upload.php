@@ -22,57 +22,51 @@
 		exit();
 	}
 		
-
+	$formats = array('jpg', 'jpeg', 'png', 'gif', 'webp');
 	$target_dir = "uploads/";
 	$target_image = basename($_FILES["fileToUpload"]["name"]);
 	$target_file = $target_dir . $target_image;
 	$uploadOk = 1;
-	$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+	
 
-	// Check if image file is a actual image or fake image
-	//if(isset($_POST["submit"])) {
-	    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-	    //echo '<pre>'.print_r($check, true).'</pre>';
-	    if($check !== false) {
-	        //echo "File is an image - " . $check["mime"] . ".";
-	        $uploadOk = 1;
-	    } else {
-	        echo "File is not an image.";
-	        $uploadOk = 0;
-	    }
-	//}
+	// 1. Check if image file is a actual image or fake image
+    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    //var_dump($check);
+    if($check !== false) {
+        $uploadOk = 1;
+    } else {
+        $msg = "File is not an image.";
+        //echo $msg;
+        $uploadOk = 0;
+    }
+    // !! $check == false when .webp (?)
 
-	// Check if file already exists
+	// 2. Check if file already exists
 	if (file_exists($target_file)) {
-	    echo "Sorry, file already exists.";
+	    $msg = "Sorry, file already exists.";
+	    //echo $msg;
 	    $uploadOk = 0;
 	}
+
 	// Check file size
 	// if ($_FILES["fileToUpload"]["size"] > 500000) {
 	//     echo "Sorry, your file is too large.";
 	//     $uploadOk = 0;
 	// }
 
-	// Allow certain file formats
-	if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-	&& $imageFileType != "gif" && $imageFileType != "webp") {
-	    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-	    $uploadOk = 0;
+	// 3. Check if file extention is allowed
+	$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+	if(!in_array($imageFileType,$formats)) {
+		$msg = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+		//echo $msg;
+		$uploadOk = 0;
 	}
 
 	// Check if $uploadOk is set to 0 by an error
-	if ($uploadOk == 0) {
-	    echo "Sorry, your file was not uploaded.";
-	// if everything is ok, try to upload file
-	} else {
-		//echo '<br>'.$target_file;
-	    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-	        //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-	    ?>
-			<!-- form comes here -->
-	    <?php
-	    } else {
-	        echo "Sorry, there was an error uploading your file.";
+	if($uploadOk == 1) {
+	    if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+
+	        $msg = "Sorry, there was an error uploading your file.";
 	    }
 	}
 
@@ -82,32 +76,44 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Upload</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" integrity="sha256-itWEYdFWzZPBG78bJOOiQIn06QCgN/F0wMDcC4nOhxY=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="row">
-		<h1>Edition d'image</h1>
-	</div>
-	<div class="row align-middle">
-		<div class="small-6 columns">
-			<img src="<?= $target_file?>" alt="">
-		</div>
-		<div class="small-6 columns">
-			<form action="index.php" method="post">
-				<p>Customize your image</p>
-				<fieldset class="large-6 columns">
-				    <legend>Crop</legend>
-				    <input type="radio" name="crop" value="1:1" id="crop1" required><label for="crop1">[1:1]</label>
-				    <!--<input type="radio" name="crop" value="4:3" id="crop2"><label for="crop2">[4:3]</label>-->
-				    <input type="radio" name="crop" value="none" id="crop3"><label for="crop3">none</label>
-				</fieldset>
-				<input type="hidden" name="img" value="<?= $target_image; ?>">
-				<input type="submit" class="button" name="submit" value="Submit">
-			</form>
-		</div>
-		
-	</div>
+	<?php
+		if(isset($msg)) {
+		?>
+			<div class="row">
+				<p><?= $msg ?></p>
+			</div>
+		<?php
+		}else {
+		?>
+			<div class="row">
+				<h1 class="text-center">Edition d'image</h1>
+			</div>
+			<div class="row">
+				<div class="medium-6 columns">
+					<img src="<?= $target_file?>" alt="">
+				</div>
+				<div class="medium-6 columns">
+					<form action="index.php" method="post">
+						<p>Customize your image</p>
+						<fieldset class="large-6 columns">
+						    <legend>Crop</legend>
+						    <input type="radio" name="crop" value="1:1" id="crop1" required><label for="crop1">[1:1]</label>
+						    <!--<input type="radio" name="crop" value="4:3" id="crop2"><label for="crop2">[4:3]</label>-->
+						    <input type="radio" name="crop" value="none" id="crop3"><label for="crop3">none</label>
+						</fieldset>
+						<input type="hidden" name="img" value="<?= $target_image; ?>">
+						<input type="submit" class="button" name="submit" value="Submit">
+					</form>
+				</div>
+				
+			</div>
+		<?php
+		}
+	?>
 	
 </body>
 </html>

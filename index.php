@@ -3,6 +3,9 @@
 
 	$target_dir = "uploads/";
 	$imgs = array_slice(scandir($target_dir),2);
+
+	
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,8 +22,22 @@
 		<div class="columns">
 			<form action="upload.php" method="post" enctype="multipart/form-data">
 				<p>Select image to upload:</p>
+				<div class="row">
+					<div class="medium-6 columns">
+						<label>Title:
+				        	<input type="text" name="title">
+				      	</label>
+					</div>
+					<div class="medium-6 columns">
+						<label>
+						  Description:
+						  <textarea name="description"></textarea>
+						</label>
+					</div>
+				</div>
+				
 				<div class="input-group">
-				  <input class="input-group-field" type="text">
+				  <input class="input-group-field" type="text" id="file-name">
 				  <div class="input-group-button">
 				    <label for="exampleFileUpload" class="button" class="columns">Upload File</label>
 				    <input type="file" name="fileToUpload" id="exampleFileUpload" accept=".gif,.jpg,.jpeg,.png,.webp" class="show-for-sr">
@@ -33,27 +50,41 @@
 
 	<main class="row grid">
 		<?php
-			$target_dir = "uploads/";
+			$target_dir = "thumbs/";
 			$imgs = array_slice(scandir($target_dir),2);
-			//echo '<pre>'.print_r($imgs, true).'</pre>';
+
 			foreach ($imgs as $key => $img) {
-			?>
+			?>	<!--
 				<div class="grid-item">
 					<div class="card">
-					  <a data-open="modal"><img src="<?= $target_dir.$img?>" alt=""></a>
+					  <a data-open="modal" data-img="uploads/<?= $img?>"><img src="<?= $target_dir.$img?>" alt=""></a>
 					  <div class="card-section">
 					    <h4>This is a card.</h4>
 					    <p>It has an easy to override visual style, and is appropriately subdued.</p>
 					  </div>
 					</div>
-				</div>
+				</div> -->
 			<?php	
 			}
+
+			$xml = new DOMDocument();
+			$xml->load("db.xml");
+			
+			$x = $xml->getElementsByTagName('image');
+			echo '<pre>'.print_r($x, true).'</pre>';
+			foreach ($x as $value) {
+				echo '<pre>'.print_r($value, true).'</pre>';
+				// foreach ($value->childNodes as $key ) {
+				// 	echo '<pre>'.print_r($key->nodeValue, true).'</pre>';
+				// }
+			}
+
+			
 		?>
 	</main>
 	<!-- modal -->
-	<div class="small reveal" id="modal" data-reveal>
-	  <img src="uploads/test.jpeg" alt="">
+	<div class="reveal" id="modal" data-reveal>
+	  <img src="" alt="">
 	  <button class="close-button" data-close aria-label="Close modal" type="button">
 	    <span aria-hidden="true">&times;</span>
 	  </button>

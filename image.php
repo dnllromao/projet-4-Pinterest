@@ -8,7 +8,7 @@
 		$imgSize = getimagesize('uploads/'.$_POST['img']);
 		//echo '<pre>'.print_r($imgSize, true).'</pre>';
 
-
+		// I could use getwidth form simpleimage
 		$crop = [
 			'x1' => 0,
 			'x2' => $imgSize[0],
@@ -31,19 +31,7 @@
 				break;
 		}
 
-		//echo '<pre>'.print_r($crop, true).'</pre>';
-		try {
-		  // Create a new SimpleImage object
-		  $image = new \claviska\SimpleImage('uploads/'.$_POST['img']);
-		  // Manipulate it
-		  $image
-		    ->bestFit(75, 75)
-		    ->toFile('thumbs/'.$_POST['img']);                      // output to the screen
-		} catch(Exception $err) {
-		  // Handle errors
-		  echo $err->getMessage();
-		}
-
+		
 		try {
 		  // Create a new SimpleImage object
 		  $image = new \claviska\SimpleImage('uploads/'.$_POST['img']);
@@ -56,6 +44,22 @@
 		  echo $err->getMessage();
 		}
 
-		
+		// var_dump($image->getHeight());
+		// var_dump('hey'.$imgSize[1]);
+
+		try {
+		  // Create a new SimpleImage object
+		  $image = new \claviska\SimpleImage('uploads/'.$_POST['img']);
+		  // Manipulate it
+		  $image
+		    ->bestFit(300, $imgSize[1])
+		    ->toFile('thumbs/'.$_POST['img']);                      // output to the screen
+		} catch(Exception $err) {
+		  // Handle errors
+		  echo $err->getMessage();
+		}
+
+		// var_dump($image->getHeight());
+		// var_dump('hey'.$imgSize[1]);
 	
 	}

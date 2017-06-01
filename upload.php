@@ -15,7 +15,16 @@
 
 	*/
 
-	//echo '<pre>'.print_r($_FILES, true).'</pre>';
+	echo '<pre>'.print_r($_POST, true).'</pre>';
+	echo '<pre>'.print_r($_FILES, true).'</pre>';
+
+	function sanitization($data) {
+		$data = trim($data); // Strip whitespace
+	    $data = strip_tags($data); // 
+		$data = stripslashes($data); // Remove the backslash
+		$data = htmlspecialchars($data); // Convert special characters to HTML entities
+		return $data;
+	}
 
 	if(isset($_POST["submit"]) && $_FILES['fileToUpload']['error'] > 0) {
 		header('Location: index.php');
@@ -70,6 +79,26 @@
 	    }
 	}
 
+
+	$title = (!empty($_POST['title']))?sanitization($_POST['title']):'';
+	$description = (!empty($_POST['description']))?sanitization($_POST['description']):'';
+	
+	$xml = new DOMDocument();
+	$xml->load("db.xml");
+
+	$nodeImage = $xml->createElement('image');
+	$original = $xml->createElement('original', $target_file);
+	$thumbs = $xml->createElement('thumbs', 'thumbs/'.$target_image);
+	$title = $xml->createElement('title', $title);
+	$description = $xml->createElement('description', $description);
+	$likes = $xml->createElement('likes', 0);
+
+	$nodeImage->appendChild($original)->appendChild($thumbs)->appendChild($title)->appendChild($title)->appendChild($likes);
+	//$nodeImage->appendChild($original);
+	$xml->appendChild($nodeImage);
+	print $xml->saveXML();
+	$xml->save("db.xml");
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -114,6 +143,5 @@
 		<?php
 		}
 	?>
-	
 </body>
 </html>

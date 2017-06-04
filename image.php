@@ -1,65 +1,56 @@
-<?php 
-	//echo '<pre>'.print_r($_POST,true).'</pre>';
+<?php
 
-	if(isset($_POST["submit"]) && !empty($_POST['crop']) && !empty($_POST['img'])) {
+	if(!empty($_POST['crop']) && !empty($_POST['img'])) {
 	
-		require 'vendor/claviska/simpleimage/src/claviska/SimpleImage.php';
+		require 'lib/SimpleImage.php';
+		require('functions.php');
 
-		$imgSize = getimagesize('uploads/'.$_POST['img']);
-		//echo '<pre>'.print_r($imgSize, true).'</pre>';
+		$crop = sanitization($_POST['crop']);
+		$file = sanitization($_POST['img']);
 
-		// I could use getwidth form simpleimage
-		$crop = [
-			'x1' => 0,
-			'x2' => $imgSize[0],
-			'y1' => 0,
-			'y2' => $imgSize[1]
-		];
+		function get_crop ($image,$choix) {
+			$width = $image->getwidth();
+			$height = $image->getHeight();
 
-		switch ($_POST['crop']) {
-			case '1:1':
-				$gap = ($imgSize[0] - $imgSize[1]) / 2;
-				//echo $gap;
-				$crop['x1'] = $gap;
-				$crop['x2'] = $imgSize[0] - $gap;
-				break;
-			case '4:3':
-				# code...
-				break;
-			default:
+			$crop = [
+				'x1' => 0,
+				'x2' => $width,
+				'y1' => 0,
+				'y2' => $height
+			];
 
-				break;
+			switch ($choix) {
+				case '1:1':
+					$gap = ($width - $height) / 2;
+					$crop['x1'] = $gap;
+					$crop['x2'] = $width - $gap;
+					break;
+				case '4:3':
+					# code...
+					break;
+				default:
+
+					break;
+			}
+
+			return $crop;
 		}
 
 		
+
+		// 2. Create thumbnail
 		try {
 		  // Create a new SimpleImage object
-		  $image = new \claviska\SimpleImage('uploads/'.$_POST['img']);
+		  $image = new \claviska\SimpleImage('uploads/orig/'.$file);
+		  $crop = get_crop($image,$crop);
 		  // Manipulate it
 		  $image
-		    ->crop($crop['x1'],$crop['y1'],$crop['x2'],$crop['y2'])
-		    ->toFile('uploads/'.$_POST['img']);                      // output to the screen
+		  	->crop($crop['x1'],$crop['y1'],$crop['x2'],$crop['y2'])
+		    ->bestFit(300, $image->getHeight())
+		    ->toFile('uploads/thumbs/'.$file);       
 		} catch(Exception $err) {
 		  // Handle errors
 		  echo $err->getMessage();
 		}
-
-		// var_dump($image->getHeight());
-		// var_dump('hey'.$imgSize[1]);
-
-		try {
-		  // Create a new SimpleImage object
-		  $image = new \claviska\SimpleImage('uploads/'.$_POST['img']);
-		  // Manipulate it
-		  $image
-		    ->bestFit(300, $imgSize[1])
-		    ->toFile('thumbs/'.$_POST['img']);                      // output to the screen
-		} catch(Exception $err) {
-		  // Handle errors
-		  echo $err->getMessage();
-		}
-
-		// var_dump($image->getHeight());
-		// var_dump('hey'.$imgSize[1]);
 	
 	}

@@ -4,8 +4,6 @@
 	$target_dir = "uploads/";
 	$imgs = array_slice(scandir($target_dir),2);
 
-	
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +12,6 @@
 	<title>Pinterest</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" integrity="sha256-itWEYdFWzZPBG78bJOOiQIn06QCgN/F0wMDcC4nOhxY=" crossorigin="anonymous" />
-	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation-flex.min.css"> -->
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -54,30 +51,34 @@
 			$imgs = array_slice(scandir($target_dir),2);
 
 			foreach ($imgs as $key => $img) {
-			?>	<!--
+			?>	
 				<div class="grid-item">
 					<div class="card">
 					  <a data-open="modal" data-img="uploads/<?= $img?>"><img src="<?= $target_dir.$img?>" alt=""></a>
 					  <div class="card-section">
-					    <h4>This is a card.</h4>
+					    <h4>This is a card</h4>
 					    <p>It has an easy to override visual style, and is appropriately subdued.</p>
 					  </div>
 					</div>
-				</div> -->
+				</div>
 			<?php	
 			}
 
-			$xml = new DOMDocument();
+			
+
+			//$uploads = new SimpleXMLElment()
+
+			/*$xml = new DOMDocument();
 			$xml->load("db.xml");
 			
 			$x = $xml->getElementsByTagName('image');
 			echo '<pre>'.print_r($x, true).'</pre>';
 			foreach ($x as $value) {
-				echo '<pre>'.print_r($value, true).'</pre>';
+				echo '<pre>'.print_r($value, true).'</pre>';*/
 				// foreach ($value->childNodes as $key ) {
 				// 	echo '<pre>'.print_r($key->nodeValue, true).'</pre>';
 				// }
-			}
+			//}
 
 			
 		?>

@@ -15,8 +15,8 @@
 
 	*/
 
-	echo '<pre>'.print_r($_POST, true).'</pre>';
-	echo '<pre>'.print_r($_FILES, true).'</pre>';
+	//echo '<pre>'.print_r($_POST, true).'</pre>';
+	//echo '<pre>'.print_r($_FILES, true).'</pre>';
 
 	function sanitization($data) {
 		$data = trim($data); // Strip whitespace
@@ -69,6 +69,20 @@
 		$msg = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
 		//echo $msg;
 		$uploadOk = 0;
+
+		$dom = new DOMDocument();
+		$dom->load('db.xml');
+
+		$img = $dom->createElement('image');
+		$file = $dom->createElement('file', $target_image);
+		$title = $dom->createElement('title', $title);
+		$description = $dom->createElement('description', $description);
+		$img->appendChild($file);
+		$img->appendChild($title);
+		$img->appendChild($description);
+		$dom->childNodes[0]->appendChild($img);
+		$dom->save('db.xml');
+
 	}
 
 	// Check if $uploadOk is set to 0 by an error
@@ -82,22 +96,10 @@
 
 	$title = (!empty($_POST['title']))?sanitization($_POST['title']):'';
 	$description = (!empty($_POST['description']))?sanitization($_POST['description']):'';
+
+
+
 	
-	$xml = new DOMDocument();
-	$xml->load("db.xml");
-
-	$nodeImage = $xml->createElement('image');
-	$original = $xml->createElement('original', $target_file);
-	$thumbs = $xml->createElement('thumbs', 'thumbs/'.$target_image);
-	$title = $xml->createElement('title', $title);
-	$description = $xml->createElement('description', $description);
-	$likes = $xml->createElement('likes', 0);
-
-	$nodeImage->appendChild($original)->appendChild($thumbs)->appendChild($title)->appendChild($title)->appendChild($likes);
-	//$nodeImage->appendChild($original);
-	$xml->appendChild($nodeImage);
-	print $xml->saveXML();
-	$xml->save("db.xml");
 
 ?>
 <!DOCTYPE html>
@@ -106,37 +108,41 @@
 	<meta charset="UTF-8">
 	<title>Upload</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css" integrity="sha256-itWEYdFWzZPBG78bJOOiQIn06QCgN/F0wMDcC4nOhxY=" crossorigin="anonymous" />
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="edition">
 	<?php
 		if(isset($msg)) {
 		?>
-			<div class="row">
-				<p><?= $msg ?></p>
-			</div>
+			<!-- <div class="row message">
+				<p class="text-center lead"><?= $msg ?></p>
+			</div> -->
 		<?php
 		}else {
 		?>
 			<div class="row">
-				<h1 class="text-center">Edition d'image</h1>
+				<h1 class="text-center subheader">Edition d'image</h1>
 			</div>
 			<div class="row">
 				<div class="medium-6 columns">
-					<img src="<?= $target_file?>" alt="">
+					<div class="small-10 small-offset-1 medium-offset-2 columns">
+						<img class="rounded" src="<?= $target_file?>" alt="">
+					</div>
 				</div>
 				<div class="medium-6 columns">
-					<form action="index.php" method="post">
-						<p>Customize your image</p>
-						<fieldset class="large-6 columns">
-						    <legend>Crop</legend>
-						    <input type="radio" name="crop" value="1:1" id="crop1" required><label for="crop1">[1:1]</label>
-						    <!--<input type="radio" name="crop" value="4:3" id="crop2"><label for="crop2">[4:3]</label>-->
-						    <input type="radio" name="crop" value="none" id="crop3"><label for="crop3">none</label>
-						</fieldset>
-						<input type="hidden" name="img" value="<?= $target_image; ?>">
-						<input type="submit" class="button" name="submit" value="Submit">
-					</form>
+					<div class="small-10 small-offset-1 columns">
+						<form action="index.php" method="post">
+							<p>Customize your image:</p>
+							<fieldset>
+							    <legend>Crop</legend>
+							    <input type="radio" name="crop" value="1:1" id="crop1" required><label for="crop1">[1:1]</label>
+							    <!--<input type="radio" name="crop" value="4:3" id="crop2"><label for="crop2">[4:3]</label>-->
+							    <input type="radio" name="crop" value="none" id="crop3"><label for="crop3">none</label>
+							</fieldset>
+							<input type="hidden" name="img" value="<?= $target_image; ?>">
+							<input type="submit" class="button float-right" name="submit" value="Submit">
+						</form>
+					</div>
 				</div>
 				
 			</div>
